@@ -36,7 +36,7 @@ jwt = JWTManager(app)
 blacklist = set()
 CORS(app, expose_headers='Authorization')
 
-client = MongoClient('mongodb://sidpremkumar:test1234@ds159988.mlab.com:59988/writefreedb')
+client = MongoClient('mongodb://{db_username}:{db_password}@ds159988.mlab.com:59988/writefreedb')
 
 credentials_collection = client['writefreedb']['credentials']
 notes_collection = client['writefreedb']['notes']

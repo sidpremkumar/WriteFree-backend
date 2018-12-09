@@ -13,6 +13,7 @@ from draftjs_exporter.html import HTML
 import MongoDBCalls as dbcalls
 import control as control
 import re
+import mongomock
 
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token, create_refresh_token,
@@ -34,11 +35,13 @@ jwt = JWTManager(app)
 blacklist = set()
 CORS(app, expose_headers='Authorization')
 
-client = MongoClient('mongodb://localhost:27017/')
+#client = MongoClient('mongodb://localhost:27017/')
+client = mongomock.MongoClient().db.collection
 
 credentials_collection = client['WriteFreeDB']['credentials']
 notes_collection = client['WriteFreeDB']['notes']
 application_collection = client['WriteFreeDB']['application']
+
 
 @jwt.token_in_blacklist_loader
 def check_if_token_in_blacklist(decrypted_token):
@@ -175,7 +178,6 @@ def deleteNote():
 @jwt_required
 def addNote():
     email = get_jwt_identity()
-    print(email)
     credentials = dbcalls.DB_find_one(credentials_collection, {'email': email})
     defaultNoteSettings = credentials['defaultNoteSettings']['draftjsObj']
     baseNewNote = {
@@ -197,7 +199,6 @@ def addNote():
 @app.route ('/save-note', methods= ['POST'])
 @jwt_required
 def saveNote():
-    print(get_jwt_identity())
     credentials = dbcalls.DB_find_one(credentials_collection, {'email': get_jwt_identity()})
     if (credentials):
         form_data = json.loads(request.get_data())
@@ -212,7 +213,9 @@ def updateDefaultSettings():
     credentials = dbcalls.DB_find_one(credentials_collection, {'email': email})
     if credentials:
         form_data = json.loads(request.get_data())
-        form_data_new = json.loads(form_data['body'])
+        #OLD: form_data_new = json.loads(form_data['body'])
+        form_data_new = form_data['body']
+        print("HERE", form_data_new)
         control.update_default_setting(credentials_collection, form_data_new, email)
         return "Default Setting updated", 200
     else:

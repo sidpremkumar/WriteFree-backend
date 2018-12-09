@@ -20,6 +20,8 @@ from flask_jwt_extended import (
 )
 
 # initializations
+#Mlab password -> writefree123
+
 db_address = 'mongodb://localhost:27017/'
 app = Flask(__name__)
 CORS(app)

@@ -36,11 +36,11 @@ jwt = JWTManager(app)
 blacklist = set()
 CORS(app, expose_headers='Authorization')
 
-client = MongoClient('mongodb://localhost:27017/')
+client = MongoClient('mongodb://sidpremkumar:test1234@ds159988.mlab.com:59988/writefreedb')
 
-credentials_collection = client['WriteFreeDB']['credentials']
-notes_collection = client['WriteFreeDB']['notes']
-application_collection = client['WriteFreeDB']['application']
+credentials_collection = client['writefreedb']['credentials']
+notes_collection = client['writefreedb']['notes']
+application_collection = client['writefreedb']['application']
 
 @jwt.token_in_blacklist_loader
 def check_if_token_in_blacklist(decrypted_token):
